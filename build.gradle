@@ -1,0 +1,48 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
+
+apply plugin: "java"
+apply plugin: "idea"
+
+group = "cn.hanabi"
+
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+    options.encoding = 'UTF-8'
+}
+
+
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+configurations {
+    jarLibs
+}
+
+dependencies {
+    jarLibs('commons-codec:commons-codec:1.15')
+    jarLibs('com.google.code.gson:gson:2.2.4')
+    jarLibs('io.netty:netty-all:4.0.23.Final')
+    jarLibs('mysql:mysql-connector-java:8.0.29')
+    implementation configurations.jarLibs
+
+}
+
+jar {
+    manifest.attributes(
+            'Manifest-Version': 1.0,
+            "Main-Class": "cn.hanabi.irc.server.ServerMain"
+    )
+
+    from {
+        configurations.jarLibs.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
